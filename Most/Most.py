@@ -1,31 +1,36 @@
+
+def dfs(graph, visited, node):
+    visited[node] = True
+    for i in range(len(graph)):
+        if graph[node][i] and not visited[i]:
+            dfs(graph, visited, i)
+
+def find_edge_to_remove(graph):
+    for i in range(len(graph)):
+        for j in range(i+1, len(graph)):
+            if graph[i][j]:
+
+                graph[i][j] = 0
+                graph[j][i] = 0
+
+                visited = [False] * len(graph)
+                dfs(graph, visited, i)
+
+                if not all(visited):
+
+                    return (i, j)
+
+                graph[i][j] = 1
+                graph[j][i] = 1
+
+    return None
+
 graph = [[0, 1, 0, 0],
          [1, 0, 1, 0],
          [0, 1, 0, 1],
          [0, 0, 1, 0]]
-
-n = len(graph)
-visited = [False] * n
-tin = [0] * n
-low = [0] * n
-timer = 0
-
-def dfs(node, parent=-1):
-    global timer
-    visited[node] = True
-    tin[node] = low[node] = timer
-    timer += 1
-    for neighbor in range(n):
-        if graph[node][neighbor]:
-            if neighbor == parent:
-                continue
-            if visited[neighbor]:
-                low[node] = min(low[node], tin[neighbor])
-            else:
-                dfs(neighbor, node)
-                low[node] = min(low[node], low[neighbor])
-                if low[neighbor] > tin[node]:
-                    print("bridge: ", node, neighbor)
-
-for i in range(n):
-    if not visited[i]:
-        dfs(i)
+edge = find_edge_to_remove(graph)
+if edge is not None:
+    print("bridge: ", edge)
+else:
+    print("cant.")
